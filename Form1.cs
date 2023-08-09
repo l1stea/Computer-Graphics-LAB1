@@ -5,28 +5,35 @@ namespace LAB1
 {
     public partial class Form1 : Form
     {
-        public Form1() {
+        public Form1()
+        {
             InitializeComponent();
         }
 
-        struct Complex {
+        struct Complex
+        {
             public double x;
             public double y;
 
         };
 
-        public void draw_fractal(int Width, int Height, Pen drw_pen, Graphics g) {
+        public void draw_fractal(int Width, int Height, Pen drw_pen, Graphics g)
+        {
             int iterations = 50;
-            double max = 1.64;//1.64
-            //double max = 4;//1.64
+            //double max = 1.64;
+            double max = 4;
             int xc, yc;
             int x, y, n;
             Complex z, c;
-            xc = (Width + 200) / 2;
-            yc = (Height + 100) / 2;
+            xc = (Width + 10) / 2;
+            yc = (Height + 10) / 2;
+            //xc = Width;
+            //yc = Height;
 
-            for (y = -yc; y < yc; y++) {
-                for (x = -xc; x < xc; x++) {
+            for (y = -yc; y < yc; y++)
+            {
+                for (x = -xc; x < xc; x++)
+                {
                     n = 0;
                     c.x = x * 0.009 + 1;
                     c.y = y * 0.009;
@@ -34,17 +41,22 @@ namespace LAB1
                     z.x = 0;
                     z.y = 0;
 
-                    double x0 = -1.5; // x0 = -1.5 xn = 1.0 y0 = -0.8 yn = 0.8
-                    double y0 = -0.8;
-                    double xn = 1;
-                    double yn = 0.8;
-                    //double x0 = -2.2;
-                    //double y0 = -1.2;
+                    //double x0 = -1.5; // x0 = -1.5 xn = 1.0 y0 = -0.8 yn = 0.8
+                    //double y0 = -0.8;
                     //double xn = 1;
+                    //double yn = 0.8;
+                    double x0 = -2.2;
+                    double y0 = -1.2;
+                    double xn = 1;
+                    double yn = 1.2;
+                    //double x0 = -1.78; // x0 = -1.5 xn = 1.0 y0 = -0.8 yn = 0.8
+                    //double y0 = -1.2;
+                    //double xn = -1.75;
                     //double yn = 1.2;
 
-                    while ((z.x * z.x + z.y * z.y <= max) && (n < iterations)) {
-                        
+                    while ((z.x * z.x + z.y * z.y <= max) && (n < iterations))
+                    {
+
                         double xtime = z.x;
                         if ((z.x >= x0 && z.x < xn) && (z.y >= y0 && z.y < yn))
                         {
@@ -57,7 +69,8 @@ namespace LAB1
 
                     };
 
-                    if (n < iterations) {
+                    if (n < iterations)
+                    {
                         drw_pen.Color = Color.FromArgb(255, 0, (n * 5) % 255, (n * 10) % 255);
                         g.DrawRectangle(drw_pen, xc + x, yc + y, 1, 1);
                     }
@@ -66,7 +79,8 @@ namespace LAB1
             }
         }
 
-        private void Draw_click(object sender, EventArgs e) {
+        private void Draw_click(object sender, EventArgs e)
+        {
             int Width = pictureBox1.Width, Height = pictureBox1.Height;
 
             Pen drw_pen = new Pen(Color.Black, 1);
@@ -74,7 +88,8 @@ namespace LAB1
             draw_fractal(Width, Height, drw_pen, g);
         }
 
-        private void Picture_box(object sender, EventArgs e) {
+        private void Picture_box(object sender, EventArgs e)
+        {
 
         }
     }
