@@ -41,7 +41,7 @@
             button1.TabIndex = 0;
             button1.Text = "button1";
             button1.UseVisualStyleBackColor = true;
-            button1.Click += Draw_click;
+            button1.Click += button1_Click;
             // 
             // pictureBox1
             // 
@@ -50,6 +50,7 @@
             pictureBox1.Size = new Size(410, 397);
             pictureBox1.TabIndex = 1;
             pictureBox1.TabStop = false;
+            pictureBox1.MouseClick += pictureBox1_MouseClick;
             // 
             // Form1
             // 

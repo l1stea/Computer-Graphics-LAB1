@@ -1,3 +1,4 @@
+using System.Numerics;
 using System.Windows.Forms;
 using System.Windows.Forms.ComponentModel.Com2Interop;
 
@@ -5,92 +6,150 @@ namespace LAB1
 {
     public partial class Form1 : Form
     {
+        Bitmap flag;
+        Color color;
+        Size size;
+
+        Decimal SizeArea;
+        Decimal CenterX, CenterY;
+        Decimal ScaleArea;
+
         public Form1()
         {
-            InitializeComponent();
+            this.InitializeComponent();
+
+            flag = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+            pictureBox1.Image = flag;
+            color = new Color();
+            size = pictureBox1.Size;
+
+            CenterX = -0.5m;
+            CenterY = 0;
+            SizeArea = 3;
+            ScaleArea = 3;
         }
 
-        struct Complex
+        public void Draw_Fractal_Alg()
         {
-            public double x;
-            public double y;
+            flag = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+            pictureBox1.Image = flag;
+            size = pictureBox1.Size;
 
-        };
+            Complex Z;
+            Complex Z0;
+            Complex C;
 
-        public void draw_fractal(int Width, int Height, Pen drw_pen, Graphics g)
-        {
-            int iterations = 50;
-            //double max = 1.64;
-            double max = 4;
-            int xc, yc;
-            int x, y, n;
-            Complex z, c;
-            xc = (Width + 10) / 2;
-            yc = (Height + 10) / 2;
-            //xc = Width;
-            //yc = Height;
+            int i, x, y;
 
-            for (y = -yc; y < yc; y++)
+            for (x = 1; x < size.Width; x++)
             {
-                for (x = -xc; x < xc; x++)
+                for (y = 1; y < size.Height; y++)
                 {
-                    n = 0;
-                    c.x = x * 0.009 + 1;
-                    c.y = y * 0.009;
+                    C = new Complex(
+                        (CenterX - SizeArea / 2) + x * (SizeArea / size.Width),
+                        (CenterY - SizeArea / 2) + y * (SizeArea / size.Height));
+                    Z = new Complex();
 
-                    z.x = 0;
-                    z.y = 0;
-
-                    //double x0 = -1.5; // x0 = -1.5 xn = 1.0 y0 = -0.8 yn = 0.8
-                    //double y0 = -0.8;
-                    //double xn = 1;
-                    //double yn = 0.8;
-                    double x0 = -2.2;
-                    double y0 = -1.2;
-                    double xn = 1;
-                    double yn = 1.2;
-                    //double x0 = -1.78; // x0 = -1.5 xn = 1.0 y0 = -0.8 yn = 0.8
-                    //double y0 = -1.2;
-                    //double xn = -1.75;
-                    //double yn = 1.2;
-
-                    while ((z.x * z.x + z.y * z.y <= max) && (n < iterations))
+                    for (i = 1; i <= 110; i++)
                     {
+                        Z0 = Z;
+                        Z = Z0 * Z0 + C;
 
-                        double xtime = z.x;
-                        if ((z.x >= x0 && z.x < xn) && (z.y >= y0 && z.y < yn))
+                        if (Z.MagnitudeSQ > 4)
                         {
-                            n++;
-                            z.x = xtime * xtime - z.y * z.y + c.x; // xn1 == xn+1
-                            z.y = 2 * xtime * z.y + c.y; // yn1 == yn+1
+                            color = Color.FromArgb(255, 255, 255);
+                            flag.SetPixel(x, y, color);
+                            break;
                         }
-                        else break;
-
-
-                    };
-
-                    if (n < iterations)
-                    {
-                        drw_pen.Color = Color.FromArgb(255, 0, (n * 5) % 255, (n * 10) % 255);
-                        g.DrawRectangle(drw_pen, xc + x, yc + y, 1, 1);
                     }
 
+                    if (i > 99)
+                    {
+                        color = Color.FromArgb(i + 50, i + 100, i + 140);
+                        flag.SetPixel(x, y, color);
+                    }
                 }
+                this.pictureBox1.Refresh();
+            }
+            this.pictureBox1.Refresh();
+            MessageBox.Show("Построение закончено");
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Draw_Fractal_Alg();
+        }
+
+        private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
+        {
+            int X = e.X,
+                Y = e.Y;
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    CenterX = (CenterX - SizeArea / 2) + X * (SizeArea / size.Width);
+                    CenterY = (CenterY - SizeArea / 2) + Y * (SizeArea / size.Height);
+                    SizeArea /= ScaleArea;
+                    Draw_Fractal_Alg();
+                    break;
+                case MouseButtons.Middle:
+                    CenterX = -0.5m;
+                    CenterY = 0;
+                    SizeArea = 3;
+                    ScaleArea = 3;
+                    Draw_Fractal_Alg();
+                    break;
+                case MouseButtons.Right:
+                    CenterX = (CenterX - SizeArea / 2) + X * (SizeArea / size.Width);
+                    CenterY = (CenterY - SizeArea / 2) + Y * (SizeArea / size.Height);
+                    SizeArea *= ScaleArea;
+                    Draw_Fractal_Alg();
+                    break;
+                default:
+                    break;
             }
         }
+    }
+}
 
-        private void Draw_click(object sender, EventArgs e)
+
+public class Complex
+{
+    public Decimal X { get; set; }
+    public Decimal Y { get; set; }
+
+    public Decimal MagnitudeSQ
+    {
+        get
         {
-            int Width = pictureBox1.Width, Height = pictureBox1.Height;
-
-            Pen drw_pen = new Pen(Color.Black, 1);
-            Graphics g = Graphics.FromHwnd(pictureBox1.Handle);
-            draw_fractal(Width, Height, drw_pen, g);
+            return X * X + Y * Y;
         }
+    }
 
-        private void Picture_box(object sender, EventArgs e)
-        {
+    public Complex()
+    {
+        X = 0;
+        Y = 0;
+    }
 
-        }
+    public Complex(Decimal x, Decimal y)
+    {
+        X = x;
+        Y = y;
+    }
+
+    public Complex(Complex C)
+    {
+        X = C.X;
+        Y = C.Y;
+    }
+
+    public static Complex operator +(Complex c1, Complex c2)
+    {
+        return new Complex(c1.X + c2.X, c1.Y + c2.Y);
+    }
+
+    public static Complex operator *(Complex c1, Complex c2)
+    {
+        return new Complex(c1.X * c2.X - c1.Y * c2.Y, c1.X * c2.Y + c2.X * c1.Y);
     }
 }
