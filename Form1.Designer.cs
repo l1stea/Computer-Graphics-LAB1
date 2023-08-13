@@ -28,45 +28,45 @@
         /// </summary>
         private void InitializeComponent()
         {
-            button1 = new Button();
-            pictureBox1 = new PictureBox();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            drawButton = new Button();
+            fractalPicture = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)fractalPicture).BeginInit();
             SuspendLayout();
             // 
-            // button1
+            // drawButton
             // 
-            button1.Location = new Point(170, 415);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 0;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += Draw_click;
+            drawButton.Location = new Point(170, 415);
+            drawButton.Name = "drawButton";
+            drawButton.Size = new Size(85, 23);
+            drawButton.TabIndex = 0;
+            drawButton.Text = "Нарисовать";
+            drawButton.UseVisualStyleBackColor = true;
+            drawButton.Click += Draw_click;
             // 
-            // pictureBox1
+            // fractalPicture
             // 
-            pictureBox1.Location = new Point(12, 12);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(410, 397);
-            pictureBox1.TabIndex = 1;
-            pictureBox1.TabStop = false;
+            fractalPicture.Location = new Point(12, 12);
+            fractalPicture.Name = "fractalPicture";
+            fractalPicture.Size = new Size(410, 397);
+            fractalPicture.TabIndex = 1;
+            fractalPicture.TabStop = false;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(433, 450);
-            Controls.Add(pictureBox1);
-            Controls.Add(button1);
+            Controls.Add(fractalPicture);
+            Controls.Add(drawButton);
             Name = "Form1";
-            Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            Text = "Фрактал Мандельброта";
+            ((System.ComponentModel.ISupportInitialize)fractalPicture).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
 
-        private Button button1;
-        private PictureBox pictureBox1;
+        private Button drawButton;
+        private PictureBox fractalPicture;
     }
 }

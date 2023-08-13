@@ -1,96 +1,90 @@
-using System.Windows.Forms;
-using System.Windows.Forms.ComponentModel.Com2Interop;
+using System.Drawing;
 
 namespace LAB1
 {
     public partial class Form1 : Form
     {
+        readonly Bitmap Flag;
+        readonly decimal SizeArea;
+        private readonly decimal CenterX, CenterY;
+
+
         public Form1()
         {
             InitializeComponent();
+            Flag = new Bitmap(fractalPicture.Width, fractalPicture.Height);
+            fractalPicture.Image = Flag;
+            CenterX = -0.5m;
+            CenterY = 0;
+            SizeArea = 3;
         }
 
-        struct Complex
+        int xCoordPicture;
+        int yCoordPicture;
+        decimal xCoord;
+        decimal yCoord;
+
+
+        public void Draw_fractal()
         {
-            public double x;
-            public double y;
-
-        };
-
-        public void draw_fractal(int Width, int Height, Pen drw_pen, Graphics g)
-        {
-            int iterations = 50;
-            //double max = 1.64;
-            double max = 4;
-            int xc, yc;
-            int x, y, n;
-            Complex z, c;
-            xc = (Width + 10) / 2;
-            yc = (Height + 10) / 2;
-            //xc = Width;
-            //yc = Height;
-
-            for (y = -yc; y < yc; y++)
+            int Width = fractalPicture.Width;
+            int Height = fractalPicture.Height;
+            for (xCoordPicture = 0; xCoordPicture < Width; xCoordPicture++)
             {
-                for (x = -xc; x < xc; x++)
+                for (yCoordPicture = 0; yCoordPicture < Height; yCoordPicture++)
                 {
-                    n = 0;
-                    c.x = x * 0.009 + 1;
-                    c.y = y * 0.009;
-
-                    z.x = 0;
-                    z.y = 0;
-
-                    //double x0 = -1.5; // x0 = -1.5 xn = 1.0 y0 = -0.8 yn = 0.8
-                    //double y0 = -0.8;
-                    //double xn = 1;
-                    //double yn = 0.8;
-                    double x0 = -2.2;
-                    double y0 = -1.2;
-                    double xn = 1;
-                    double yn = 1.2;
-                    //double x0 = -1.78; // x0 = -1.5 xn = 1.0 y0 = -0.8 yn = 0.8
-                    //double y0 = -1.2;
-                    //double xn = -1.75;
-                    //double yn = 1.2;
-
-                    while ((z.x * z.x + z.y * z.y <= max) && (n < iterations))
-                    {
-
-                        double xtime = z.x;
-                        if ((z.x >= x0 && z.x < xn) && (z.y >= y0 && z.y < yn))
-                        {
-                            n++;
-                            z.x = xtime * xtime - z.y * z.y + c.x; // xn1 == xn+1
-                            z.y = 2 * xtime * z.y + c.y; // yn1 == yn+1
-                        }
-                        else break;
-
-
-                    };
-
-                    if (n < iterations)
-                    {
-                        drw_pen.Color = Color.FromArgb(255, 0, (n * 5) % 255, (n * 10) % 255);
-                        g.DrawRectangle(drw_pen, xc + x, yc + y, 1, 1);
-                    }
-
+                    xCoord = ConvertCoord(CenterX, xCoordPicture, Width);
+                    yCoord = ConvertCoord(CenterY, yCoordPicture, Height);
+                    DrawPixel();
                 }
+                fractalPicture.Refresh();
             }
         }
 
-        private void Draw_click(object sender, EventArgs e)
+        Color GetColorCoord()
         {
-            int Width = pictureBox1.Width, Height = pictureBox1.Height;
-
-            Pen drw_pen = new Pen(Color.Black, 1);
-            Graphics g = Graphics.FromHwnd(pictureBox1.Handle);
-            draw_fractal(Width, Height, drw_pen, g);
+            decimal x0 = (decimal)-1.5;
+            decimal y0 = (decimal)-0.8;
+            decimal xn = 1;
+            decimal yn = (decimal)0.8;
+            int iterations = 110;
+            decimal maxMagnitude = 4;
+            // Заданные границы
+            if (xCoord >= x0 && xCoord <= xn && yCoord >= y0 && yCoord <= yn)
+            {
+                Complex Z, C, Z0;
+                C = new Complex(xCoord, yCoord);
+                Z = new Complex();
+                int i;
+                for ( i = 1; i <= iterations; i++)
+                {
+                    Z0 = Z;
+                    Z = Z0 * Z0 + C;
+                    if (Z.MagnitudeSQ > maxMagnitude)
+                    {
+                        return Color.FromArgb(255, 0, (i * 5) % 255, (i * 10) % 255);
+                    }
+                }
+                // В зоне, но итераций больше некоторого числа
+                if (i > 99)
+                {
+                    return Color.FromArgb(255, 255, 255, 255);
+                }
+            }
+            // Вне зоны
+            return Color.FromArgb(255, 100, 100, 100); 
         }
 
-        private void Picture_box(object sender, EventArgs e)
-        {
 
+        decimal ConvertCoord(decimal centerCoord, int coordPicture, decimal sizeSide)
+            => (centerCoord - SizeArea / 2) + coordPicture * (SizeArea / sizeSide);
+
+
+        void DrawPixel() => Flag.SetPixel(xCoordPicture, yCoordPicture, GetColorCoord());
+
+        private void Draw_click(object sender, EventArgs e)
+        {
+            Draw_fractal();
         }
     }
 }
