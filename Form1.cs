@@ -4,8 +4,10 @@ namespace LAB1
 {
     public partial class Form1 : Form
     {
-        readonly Bitmap Flag;
-        readonly decimal SizeArea;
+        private readonly Bitmap Flag;
+        // Размер области
+        private readonly decimal SizeArea;
+        // Расположение центра по оси абсцисс, Расположение центра по оси ординат
         private readonly decimal CenterX, CenterY;
 
 
@@ -14,34 +16,35 @@ namespace LAB1
             InitializeComponent();
             Flag = new Bitmap(fractalPicture.Width, fractalPicture.Height);
             fractalPicture.Image = Flag;
-            CenterX = -0.5m;
+            CenterX = -0.25m; 
             CenterY = 0;
-            SizeArea = 3;
+            SizeArea = 2; 
         }
 
-        int xCoordPicture;
-        int yCoordPicture;
-        decimal xCoord;
-        decimal yCoord;
+        private int xPixel;
+        private int yPixel;
+        private decimal xCoord;
+        private decimal yCoord;
 
 
-        public void Draw_fractal()
+        private void Draw_fractal()
         {
             int Width = fractalPicture.Width;
             int Height = fractalPicture.Height;
-            for (xCoordPicture = 0; xCoordPicture < Width; xCoordPicture++)
+            for (xPixel = 0; xPixel < Width; xPixel++)
             {
-                for (yCoordPicture = 0; yCoordPicture < Height; yCoordPicture++)
+                for (yPixel = 0; yPixel < Height; yPixel++)
                 {
-                    xCoord = ConvertCoord(CenterX, xCoordPicture, Width);
-                    yCoord = ConvertCoord(CenterY, yCoordPicture, Height);
+                    xCoord = ConvertCoord(CenterX, xPixel, Width);
+                    yCoord = ConvertCoord(CenterY, yPixel, Height);
                     DrawPixel();
                 }
                 fractalPicture.Refresh();
             }
         }
 
-        Color GetColorCoord()
+
+       private  Color GetColor()
         {
             decimal x0 = (decimal)-1.5;
             decimal y0 = (decimal)-0.8;
@@ -76,14 +79,15 @@ namespace LAB1
         }
 
 
-        decimal ConvertCoord(decimal centerCoord, int coordPicture, decimal sizeSide)
+        private decimal ConvertCoord(decimal centerCoord, int coordPicture, decimal sizeSide)
             => (centerCoord - SizeArea / 2) + coordPicture * (SizeArea / sizeSide);
 
 
-        void DrawPixel() => Flag.SetPixel(xCoordPicture, yCoordPicture, GetColorCoord());
+        private void DrawPixel() => Flag.SetPixel(xPixel, yPixel, GetColor());
 
         private void Draw_click(object sender, EventArgs e)
         {
+            drawButton.Enabled = false;
             Draw_fractal();
         }
     }
